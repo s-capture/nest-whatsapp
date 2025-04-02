@@ -90,6 +90,7 @@ export class WhatsappService {
             '--window-size=1280,720',
           ],
         },
+        qrMaxRetries: 3,
         takeoverOnConflict: true,
         restartOnAuthFail: true,
       });

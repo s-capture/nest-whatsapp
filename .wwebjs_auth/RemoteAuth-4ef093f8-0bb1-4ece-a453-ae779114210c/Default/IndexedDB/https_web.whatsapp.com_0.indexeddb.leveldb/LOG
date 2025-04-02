@@ -1,0 +1,19 @@
+2025/04/01-16:33:20.908 1bb07 Reusing MANIFEST /Users/shwepyihein/development/capture/nestjs-whatsapp/.wwebjs_auth/RemoteAuth-4ef093f8-0bb1-4ece-a453-ae779114210c/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/04/01-16:33:20.908 1bb07 Recovering log #55
+2025/04/01-16:33:20.908 1bb07 Reusing old log /Users/shwepyihein/development/capture/nestjs-whatsapp/.wwebjs_auth/RemoteAuth-4ef093f8-0bb1-4ece-a453-ae779114210c/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000055.log 
+2025/04/01-16:33:21.517 f203 Compacting 1@1 + 1@2 files
+2025/04/01-16:33:21.551 f203 Generated table #58@1: 25771 keys, 1520052 bytes
+2025/04/01-16:33:21.551 f203 Compacted 1@1 + 1@2 files => 1520052 bytes
+2025/04/01-16:33:21.561 f203 compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/04/01-16:33:21.562 f203 Delete type=2 #56
+2025/04/01-16:33:21.562 f203 Delete type=2 #54
+2025/04/01-16:33:22.100 f203 Level-0 table #60: started
+2025/04/01-16:33:22.106 f203 Level-0 table #60: 11930 bytes OK
+2025/04/01-16:33:22.117 f203 Delete type=0 #55
+2025/04/01-16:33:22.118 f203 Manual compaction at level-0 from '\x00\x1d\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x1e\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/04/01-16:33:23.785 29c03 Compacting 1@1 + 1@2 files
+2025/04/01-16:33:23.815 29c03 Generated table #61@1: 25925 keys, 1525431 bytes
+2025/04/01-16:33:23.815 29c03 Compacted 1@1 + 1@2 files => 1525431 bytes
+2025/04/01-16:33:23.828 29c03 compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/04/01-16:33:23.829 29c03 Delete type=2 #60
+2025/04/01-16:33:23.829 29c03 Delete type=2 #58

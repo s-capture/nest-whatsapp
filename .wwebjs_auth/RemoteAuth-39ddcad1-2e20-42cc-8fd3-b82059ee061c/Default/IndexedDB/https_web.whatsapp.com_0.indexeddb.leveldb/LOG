@@ -1,0 +1,13 @@
+2025/03/28-17:33:14.872 19e03 Reusing MANIFEST /Users/shwepyihein/development/capture/nestjs-whatsapp/.wwebjs_auth/RemoteAuth-39ddcad1-2e20-42cc-8fd3-b82059ee061c/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/03/28-17:33:14.872 19e03 Recovering log #68
+2025/03/28-17:33:14.880 19e03 Reusing old log /Users/shwepyihein/development/capture/nestjs-whatsapp/.wwebjs_auth/RemoteAuth-39ddcad1-2e20-42cc-8fd3-b82059ee061c/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000068.log 
+2025/03/28-17:33:16.042 fa03 Level-0 table #73: started
+2025/03/28-17:33:16.053 fa03 Level-0 table #73: 130968 bytes OK
+2025/03/28-17:33:16.069 fa03 Delete type=0 #68
+2025/03/28-17:33:16.069 fa03 Manual compaction at level-0 from '\x00 \x00\x00\x00' @ 72057594037927935 : 1 .. '\x00!\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/03/28-17:33:17.504 1a503 Compacting 1@1 + 1@2 files
+2025/03/28-17:33:17.541 1a503 Generated table #74@1: 29993 keys, 1659649 bytes
+2025/03/28-17:33:17.541 1a503 Compacted 1@1 + 1@2 files => 1659649 bytes
+2025/03/28-17:33:17.557 1a503 compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/03/28-17:33:17.558 1a503 Delete type=2 #70
+2025/03/28-17:33:17.558 1a503 Delete type=2 #73
