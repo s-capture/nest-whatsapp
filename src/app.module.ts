@@ -7,10 +7,18 @@ import { AppService } from './app.service';
 import { AwsS3Service } from './shared/common/aws-s3.service';
 import { AwsS3Store } from './shared/common/s3-store';
 import { WhatsappController } from './whatsapp/whatsapp.controller';
-import { WhatsappModule } from './whatsapp/whatsapp.module';
 // Add this at the very top of app.module.ts
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import * as crypto from 'crypto';
+import { AuthController } from './auth/auth.controller';
+import { AuthModule } from './auth/auth.module';
+import { OrganizationController } from './organization/organization.controller';
+import { OrganizationModule } from './organization/organization.module';
 import { SharedModule } from './shared/shared.module';
+import { UserController } from './user/user.controller';
+import { UserModule } from './user/user.module';
+import { WhatsappModule } from './whatsapp/whatsapp.module';
 globalThis.crypto = crypto as any;
 
 @Module({
@@ -36,11 +44,29 @@ globalThis.crypto = crypto as any;
 
       inject: [ConfigService],
     }),
-    WhatsappModule,
+    PassportModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET'),
+        signOptions: { expiresIn: '15m' },
+      }),
+      inject: [ConfigService],
+    }),
     SharedModule,
+    AuthModule,
+    OrganizationModule,
+    UserModule,
+    WhatsappModule,
   ],
 
-  controllers: [AppController, WhatsappController],
+  controllers: [
+    AppController,
+    AuthController,
+    UserController,
+    OrganizationController,
+    WhatsappController,
+  ],
   providers: [AppConfigService, AppService, AwsS3Service, AwsS3Store],
   exports: [AppConfigService],
 })

@@ -14,12 +14,6 @@ export class AppConfigService {
     return this.getString('NODE_ENV').toUpperCase();
   }
 
-  get mongoConfig() {
-    return {
-      uri: this.getString('MONGODB_URI'),
-    };
-  }
-
   get awsBaseConfig() {
     return {
       accessKeyId: this.getString('AWS_ACCESS_KEY_ID'),
