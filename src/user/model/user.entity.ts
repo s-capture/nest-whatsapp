@@ -1,10 +1,22 @@
-import { AuthEntity } from 'src/auth/model/auth.entity';
-import { Role } from 'src/auth/model/auth.enum';
+import { OrganizationEntity } from 'src/organization/model/organization.entity';
 import { BaseEntity } from 'src/shared/base-entity/base.entity';
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Role } from './user.enum';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
+  @Column({ nullable: true })
+  googleId: string;
+
+  @Column({ nullable: true })
+  email: string;
+
+  @Column({ nullable: true })
+  passwordHash: string;
+
+  @Column({ nullable: true })
+  refreshToken: string;
+
   @Column()
   firstName: string;
 
@@ -12,11 +24,15 @@ export class UserEntity extends BaseEntity {
   lastName: string;
 
   @Column({ default: false })
-  isVerified: boolean;
+  profielUrl: boolean;
 
   @Column({ type: 'enum', enum: Role, default: Role.ADMIN })
   role: Role;
 
-  @OneToOne(() => AuthEntity)
-  auth: AuthEntity;
+  // Keep ManyToOne for Organization
+  @ManyToOne(() => OrganizationEntity, (organization) => organization.members, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  organization: OrganizationEntity;
 }

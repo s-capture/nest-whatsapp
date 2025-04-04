@@ -1,5 +1,5 @@
-import { AuthEntity } from 'src/auth/model/auth.entity';
 import { BaseEntity } from 'src/shared/base-entity/base.entity';
+import { UserEntity } from 'src/user/model/user.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity('organization')
@@ -10,6 +10,6 @@ export class OrganizationEntity extends BaseEntity {
   @Column()
   domain: string;
 
-  @OneToMany(() => AuthEntity, (auth) => auth.organization)
-  members: AuthEntity[];
+  @OneToMany(() => UserEntity, (user) => user.organization)
+  members: UserEntity[];
 }

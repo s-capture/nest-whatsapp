@@ -8,7 +8,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(AppConfigService);
+
   const port = configService.get('PORT');
+
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
   app.enableCors();
@@ -17,6 +19,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
   app.setGlobalPrefix('api/v1');
   const swaggerOption = new DocumentBuilder()
     .setTitle(' API Documentation')
@@ -27,6 +30,7 @@ async function bootstrap() {
   const swaggerDoc = SwaggerModule.createDocument(app, swaggerOption, {
     // ignoreGlobalPrefix: false,
   });
+
   SwaggerModule.setup('docs', app, swaggerDoc, {
     customSiteTitle: 'Backend Generator',
     customfavIcon: 'https://avatars.githubusercontent.com/u/6936373?s=200&v=4',

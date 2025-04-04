@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import {
   CreateOrganizationDto,
   UpdateOrganizationDto,
@@ -14,6 +15,7 @@ import {
 import { OrganizationService } from './organization.service';
 
 @Controller('organizations')
+@ApiTags('Organization')
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
 
