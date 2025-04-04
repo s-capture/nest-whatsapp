@@ -22,6 +22,34 @@ export class CreateUserDto {
   password: string;
 }
 
+export class createFromOAuthDto {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  googleId: string;
+  @IsString()
+  @IsNotEmpty()
+  firstName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  avatar: string;
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsString()
+  @MinLength(8)
+  password: string;
+}
+
 export class UpdateUserDto {
   @IsString()
   @IsOptional()

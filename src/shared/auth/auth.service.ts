@@ -64,19 +64,25 @@ export class AuthService {
     if (!req.user) {
       throw new BadRequestException('No user from Google');
     }
+    console.log(req);
+    const { googleId, displayName, firstName, lastName, email, avatar } =
+      req.user;
 
     let user = await this.userService.findByEmail(req.user.email);
 
     if (!user) {
       // Create new user
-      user = await this.userService.create({
-        email: req.user.email,
-        name: req.user.name,
-        // Set a random password that won't be used
+      user = await this.userService.createFromOAuth({
+        email,
+        googleId,
+        name: displayName,
+        avatar: avatar,
         password: bcrypt.hashSync(Math.random().toString(36).slice(-8), 10),
+        firstName: firstName,
+        lastName: lastName,
       });
     }
-
+    console.log(user, 'user');
     return this.login(user);
   }
 }

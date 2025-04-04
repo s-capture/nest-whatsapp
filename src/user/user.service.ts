@@ -8,7 +8,12 @@ import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { OrganizationRole } from '../organization/model/organization.enum';
 import { OrganizationService } from '../organization/organization.service';
-import { CreateUserDto, InvitedUserDto, UpdateUserDto } from './model/user.dto';
+import {
+  createFromOAuthDto,
+  CreateUserDto,
+  InvitedUserDto,
+  UpdateUserDto,
+} from './model/user.dto';
 import { UserEntity } from './model/user.entity';
 
 @Injectable()
@@ -18,6 +23,24 @@ export class UserService {
     private userRepository: Repository<UserEntity>,
     private organizationService: OrganizationService,
   ) {}
+
+  async createFromOAuth(createFromOAuthDto: createFromOAuthDto) {
+    const existingUser = await this.userRepository.findOne({
+      where: { email: createFromOAuthDto.email },
+    });
+
+    if (existingUser) {
+      throw new BadRequestException('User with this email already exists');
+    }
+
+    const hashedPassword = await bcrypt.hash(createFromOAuthDto.password, 10);
+    const user = this.userRepository.create({
+      ...createFromOAuthDto,
+      password: hashedPassword,
+    });
+
+    return this.userRepository.save(user);
+  }
 
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     const existingUser = await this.userRepository.findOne({

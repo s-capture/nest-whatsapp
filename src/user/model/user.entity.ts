@@ -18,16 +18,13 @@ export class UserEntity extends BaseEntity {
   password: string;
 
   @Column({ nullable: true })
-  refreshToken: string;
-
-  @Column()
   firstName: string;
 
-  @Column()
-  lastName: string;
+  @Column({ nullable: true })
+  avatar: string;
 
-  @Column({ default: false })
-  profielUrl: boolean;
+  @Column({ nullable: true })
+  lastName: string;
 
   @Column({
     type: 'enum',

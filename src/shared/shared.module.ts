@@ -6,6 +6,8 @@ import { UserModule } from 'src/user/user.module';
 import { AuthService } from './auth/auth.service';
 import { MailService } from './auth/mail.service';
 import { JwtAuthGuard } from './guards/auth.guard';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 @Global()
 @Module({
   imports: [
@@ -36,7 +38,14 @@ import { JwtAuthGuard } from './guards/auth.guard';
     }),
     forwardRef(() => UserModule),
   ],
-  providers: [AuthService, MailService, JwtAuthGuard, JwtService],
+  providers: [
+    AuthService,
+    MailService,
+    GoogleStrategy,
+    JwtAuthGuard,
+    JwtService,
+    JwtStrategy,
+  ],
   exports: [AuthService, MailService, JwtService],
 })
 export class SharedModule {}

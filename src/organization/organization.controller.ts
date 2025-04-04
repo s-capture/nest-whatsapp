@@ -1,26 +1,28 @@
 import {
-  Controller,
-  Post,
   Body,
+  Controller,
+  Delete,
   Get,
   Param,
   Patch,
-  Delete,
-  UseGuards,
+  Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
-import { OrganizationService } from './organization.service';
-import {
-  CreateOrganizationDto,
-  UpdateOrganizationDto,
-  InviteUserDto,
-} from './model/organization.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { Roles } from '../shared/decorators/user.decorator';
 import { JwtAuthGuard } from '../shared/guards/auth.guard';
 import { RolesGuard } from '../shared/guards/role.guard';
-import { Roles } from '../shared/decorators/user.decorator';
+import {
+  CreateOrganizationDto,
+  InviteUserDto,
+  UpdateOrganizationDto,
+} from './model/organization.dto';
 import { OrganizationRole } from './model/organization.enum';
+import { OrganizationService } from './organization.service';
 
 @Controller('organizations')
+@ApiTags('organizations')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}

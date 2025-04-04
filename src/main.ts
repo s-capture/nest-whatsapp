@@ -4,6 +4,8 @@ import * as bodyParser from 'body-parser';
 import { AppModule } from './app.module';
 
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ErrorResponseInterceptor } from './shared/interceptors/error-response.interceptor';
+import { SuccessResponseInterceptor } from './shared/interceptors/serialize.interceptor';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -11,13 +13,37 @@ async function bootstrap() {
 
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-  app.enableCors();
+  app.enableCors({
+    origin: [
+      process.env.FRONTEND_URL, // Your frontend URL
+      'http://localhost:3000', // Local development
+      // Add other allowed origins as needed
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'Accept',
+      'Origin',
+      'Access-Control-Allow-Headers',
+      'Access-Control-Request-Headers',
+      'Access-Control-Allow-Origin',
+    ],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
     }),
   );
-
+  app.useGlobalInterceptors(
+    new SuccessResponseInterceptor(),
+    new ErrorResponseInterceptor(),
+  );
   app.setGlobalPrefix('api/v1');
   const swaggerOption = new DocumentBuilder()
     .setTitle(' API Documentation')
