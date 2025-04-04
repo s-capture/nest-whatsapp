@@ -39,6 +39,7 @@ export class AuthController {
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
     const user = await this.userService.create(createUserDto);
+
     return this.authService.login(user);
   }
 
@@ -68,7 +69,9 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  googleAuth() {}
+  googleAuth() {
+    //
+  }
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
@@ -77,18 +80,16 @@ export class AuthController {
     const successRedirect = this.getFrontendUrl('/oauth-callback');
 
     try {
-      // 1. Validate user exists from Google
       if (!req.user) {
         throw new InvalidOAuthProfileException(errorRedirect, 'user profile');
       }
 
-      const { access_token } = await this.authService.googleLogin(req);
+      const { access_token, refresh_token } =
+        await this.authService.googleLogin(req);
 
-      // 4. Generate token
-
-      // 5. Successful redirect
-      console.log(`${successRedirect}?token=${access_token}`);
-      return res.redirect(`${successRedirect}?token=${access_token}`);
+      return res.redirect(
+        `${successRedirect}?token=${access_token}&refresh_token=${refresh_token}`,
+      );
     } catch (error) {
       // Let the exception filter handle it
       throw new OAuthException(

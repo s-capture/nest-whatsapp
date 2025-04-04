@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEnum,
@@ -9,14 +10,17 @@ import {
 import { OrganizationRole } from '../../organization/model/organization.enum';
 
 export class CreateUserDto {
+  @ApiProperty()
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   name: string;
 
+  @ApiProperty()
   @IsString()
   @MinLength(8)
   password: string;
@@ -48,6 +52,27 @@ export class createFromOAuthDto {
   @IsString()
   @MinLength(8)
   password: string;
+}
+
+export class OAuthUpdateDto {
+  @IsString()
+  @IsNotEmpty()
+  googleId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  firstName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  avatar: string;
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 }
 
 export class UpdateUserDto {

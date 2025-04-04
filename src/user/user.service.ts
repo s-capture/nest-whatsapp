@@ -12,6 +12,7 @@ import {
   createFromOAuthDto,
   CreateUserDto,
   InvitedUserDto,
+  OAuthUpdateDto,
   UpdateUserDto,
 } from './model/user.dto';
 import { UserEntity } from './model/user.entity';
@@ -39,6 +40,13 @@ export class UserService {
       password: hashedPassword,
     });
 
+    return this.userRepository.save(user);
+  }
+
+  async updateGoogleId(id, OAuthUpdateDto: OAuthUpdateDto) {
+    const user = await this.findById(id);
+
+    Object.assign(user, OAuthUpdateDto);
     return this.userRepository.save(user);
   }
 

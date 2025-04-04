@@ -41,6 +41,7 @@ export class SuccessResponseInterceptor implements NestInterceptor {
             },
             timestamp: new Date().toISOString(),
             path: request.url,
+            success: true,
           };
         }
 
@@ -51,6 +52,7 @@ export class SuccessResponseInterceptor implements NestInterceptor {
           data: data,
           timestamp: new Date().toISOString(),
           path: request.url,
+          success: true,
         };
       }),
     );

@@ -82,6 +82,16 @@ export class AuthService {
         lastName: lastName,
       });
     }
+
+    if (!user.googleId) {
+      user = await this.userService.updateGoogleId(user.id, {
+        googleId,
+        name: displayName,
+        avatar: avatar,
+        firstName: firstName,
+        lastName: lastName,
+      });
+    }
     console.log(user, 'user');
     return this.login(user);
   }
