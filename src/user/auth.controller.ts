@@ -17,7 +17,7 @@ import {
 import { AuthService } from '../shared/auth/auth.service';
 import { UserDecorator } from '../shared/decorators/user.decorator';
 import { RefreshGuard } from '../shared/guards/refresh.guard';
-import { CreateUserDto, InvitedUserDto, LoginUserDto } from './model/user.dto';
+import { CreateUserDto, LoginUserDto } from './model/user.dto';
 import { UserEntity } from './model/user.entity';
 import { UserService } from './user.service';
 
@@ -40,12 +40,6 @@ export class AuthController {
   async register(@Body() createUserDto: CreateUserDto) {
     const user = await this.userService.create(createUserDto);
 
-    return this.authService.login(user);
-  }
-
-  @Post('register/invited')
-  async registerInvited(@Body() invitedUserDto: InvitedUserDto) {
-    const user = await this.userService.createInvitedUser(invitedUserDto);
     return this.authService.login(user);
   }
 

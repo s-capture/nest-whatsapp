@@ -21,26 +21,30 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       inject: [ConfigService],
     }),
     MailerModule.forRootAsync({
-      useFactory: () => ({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
         transport: {
-          host: process.env.MAIL_HOST,
-          port: parseInt(process.env.MAIL_PORT),
-          secure: process.env.MAIL_SECURE === 'true',
+          host: configService.get('MAIL_HOST'),
+          port: parseInt(configService.get('MAIL_PORT')),
+          secure: configService.get('MAIL_SECURE') === 'true',
           auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASSWORD,
+            user: configService.get('MAIL_USER'),
+            pass: configService.get('MAIL_PASSWORD'),
           },
         },
         defaults: {
-          from: `"${process.env.MAIL_FROM_NAME}" <${process.env.MAIL_FROM_ADDRESS}>`,
+          from: `"${configService.get('MAIL_FROM')}" <${configService.get('SUPPORT_EMAIL')}>`,
         },
       }),
     }),
     forwardRef(() => UserModule),
   ],
+
   providers: [
     AuthService,
     MailService,
+
     GoogleStrategy,
     JwtAuthGuard,
     JwtService,

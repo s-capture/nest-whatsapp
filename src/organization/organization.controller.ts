@@ -9,13 +9,14 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { InvitedUserDto } from 'src/user/model/user.dto';
 import { Roles } from '../shared/decorators/user.decorator';
 import { JwtAuthGuard } from '../shared/guards/auth.guard';
 import { RolesGuard } from '../shared/guards/role.guard';
+import { InvitationService } from './invitation.service';
 import {
   CreateOrganizationDto,
-  InviteUserDto,
   UpdateOrganizationDto,
 } from './model/organization.dto';
 import { OrganizationRole } from './model/organization.enum';
@@ -23,19 +24,25 @@ import { OrganizationService } from './organization.service';
 
 @Controller('organizations')
 @ApiTags('organizations')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class OrganizationController {
-  constructor(private readonly organizationService: OrganizationService) {}
+  constructor(
+    private readonly organizationService: OrganizationService,
+    private readonly inviteService: InvitationService,
+  ) {}
 
   @Post()
+  @Roles(OrganizationRole.ADMIN)
   create(@Body() createOrganizationDto: CreateOrganizationDto, @Req() req) {
     return this.organizationService.create(createOrganizationDto, req.user.id);
   }
 
   @Get()
-  @Roles(OrganizationRole.ADMIN)
-  findAll() {
-    return this.organizationService.findAll();
+  findAll(@Req() req) {
+    return this.organizationService.findOrganizationWithUsers(
+      req.user.organizationId,
+    );
   }
 
   @Get(':id')
@@ -59,13 +66,13 @@ export class OrganizationController {
     return this.organizationService.remove(id);
   }
 
-  @Post(':id/invite')
+  @Post('/invite')
   @Roles(OrganizationRole.ADMIN)
-  inviteUser(
-    @Param('id') id: string,
-    @Body() inviteUserDto: InviteUserDto,
-    @Req() req,
-  ) {
-    return this.organizationService.inviteUser(id, inviteUserDto, req.user);
+  inviteUser(@Body() inviteUserDto: InvitedUserDto, @Req() req) {
+    console.group(req.user, 'req');
+    return this.inviteService.inviteUser(
+      inviteUserDto,
+      req.user.organization.id,
+    );
   }
 }

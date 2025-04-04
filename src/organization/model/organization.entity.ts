@@ -7,7 +7,7 @@ export class OrganizationEntity extends BaseEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   domain: string;
 
   @OneToMany(() => UserEntity, (user) => user.organization)

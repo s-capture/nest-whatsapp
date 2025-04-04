@@ -96,6 +96,23 @@ export class LoginUserDto {
 }
 
 export class InvitedUserDto {
+  @ApiProperty()
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty()
+  @IsEnum(OrganizationRole)
+  @IsNotEmpty()
+  role: OrganizationRole;
+}
+
+export class InvitedAcceptUserDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;

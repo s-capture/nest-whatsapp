@@ -11,7 +11,6 @@ import { OrganizationService } from '../organization/organization.service';
 import {
   createFromOAuthDto,
   CreateUserDto,
-  InvitedUserDto,
   OAuthUpdateDto,
   UpdateUserDto,
 } from './model/user.dto';
@@ -66,37 +65,6 @@ export class UserService {
     });
 
     return this.userRepository.save(user);
-  }
-
-  async createInvitedUser(invitedUserDto: InvitedUserDto): Promise<UserEntity> {
-    // Validate invitation token here (implementation depends on your token system)
-
-    const existingUser = await this.userRepository.findOne({
-      where: { email: invitedUserDto.email },
-    });
-
-    if (existingUser) {
-      throw new BadRequestException('User with this email already exists');
-    }
-
-    const hashedPassword = await bcrypt.hash(invitedUserDto.password, 10);
-    const user = this.userRepository.create({
-      email: invitedUserDto.email,
-      name: invitedUserDto.name,
-      password: hashedPassword,
-      role: invitedUserDto.role,
-    });
-
-    await this.userRepository.save(user);
-
-    // Set user's organization
-    await this.setUserOrganization(
-      user.id,
-      invitedUserDto.organizationId,
-      invitedUserDto.role,
-    );
-
-    return user;
   }
 
   async setUserOrganization(

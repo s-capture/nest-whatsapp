@@ -2,6 +2,7 @@ import { OrganizationEntity } from 'src/organization/model/organization.entity';
 import { OrganizationRole } from 'src/organization/model/organization.enum';
 import { BaseEntity } from 'src/shared/base-entity/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { emailStatus } from './user.enum';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
@@ -25,6 +26,16 @@ export class UserEntity extends BaseEntity {
 
   @Column({ nullable: true })
   lastName: string;
+
+  @Column({
+    type: 'enum',
+    enum: emailStatus,
+    default: emailStatus.ACTIVE,
+  })
+  status: emailStatus;
+
+  @Column({ nullable: true })
+  invitationToken: string;
 
   @Column({
     type: 'enum',

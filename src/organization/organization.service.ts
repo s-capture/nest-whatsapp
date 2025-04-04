@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   forwardRef,
   Inject,
   Injectable,
@@ -13,7 +12,6 @@ import { UserEntity } from '../user/model/user.entity';
 import { UserService } from 'src/user/user.service';
 import {
   CreateOrganizationDto,
-  InviteUserDto,
   UpdateOrganizationDto,
 } from './model/organization.dto';
 import { OrganizationEntity } from './model/organization.entity';
@@ -50,8 +48,13 @@ export class OrganizationService {
     return organization;
   }
 
-  async findAll(): Promise<OrganizationEntity[]> {
-    return this.organizationRepository.find();
+  async findOrganizationWithUsers(organizationId: string) {
+    const organization = await this.organizationRepository.findOne({
+      where: { id: organizationId },
+      relations: ['members'],
+    });
+
+    return organization;
   }
 
   async findOne(id: string): Promise<OrganizationEntity> {
@@ -76,32 +79,5 @@ export class OrganizationService {
   async remove(id: string): Promise<void> {
     const organization = await this.findOne(id);
     await this.organizationRepository.remove(organization);
-  }
-
-  async inviteUser(
-    organizationId: string,
-    inviteUserDto: InviteUserDto,
-    inviter: UserEntity,
-  ): Promise<void> {
-    const organization = await this.findOne(organizationId);
-
-    // Check if user already exists
-    const existingUser = await this.userRepository.findOne({
-      where: { email: inviteUserDto.email },
-    });
-
-    if (existingUser) {
-      throw new BadRequestException('User with this email already exists');
-    }
-
-    // Send invitation email
-    const invitationToken = 'generate-unique-token'; // Implement token generation
-    await this.mailService.sendInvitationEmail(
-      inviteUserDto.email,
-      inviter.name,
-      organization.name,
-      inviteUserDto.role,
-      `${process.env.FRONTEND_URL}/signup?token=${invitationToken}&organization=${organizationId}&role=${inviteUserDto.role}`,
-    );
   }
 }
