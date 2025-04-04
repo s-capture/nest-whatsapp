@@ -12,7 +12,7 @@ globalThis.crypto = crypto as any;
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -34,8 +34,8 @@ globalThis.crypto = crypto as any;
       inject: [ConfigService],
     }),
     SharedModule,
-    OrganizationModule,
     UserModule,
+    OrganizationModule,
   ],
 
   controllers: [AppController],
