@@ -1,19 +1,31 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateOrganizationDto {
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   name: string;
 
-  @IsNotEmpty()
   @IsString()
-  domain: string;
+  @IsOptional()
+  domain?: string;
 }
 
 export class UpdateOrganizationDto {
   @IsString()
+  @IsOptional()
   name?: string;
 
   @IsString()
+  @IsOptional()
   domain?: string;
+}
+
+export class InviteUserDto {
+  @IsString()
+  @IsNotEmpty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  role: string;
 }

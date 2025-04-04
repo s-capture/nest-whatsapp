@@ -1,41 +1,69 @@
 import {
-  Body,
   Controller,
-  Delete,
+  Post,
+  Body,
   Get,
   Param,
   Patch,
-  Post,
+  Delete,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { OrganizationService } from './organization.service';
 import {
   CreateOrganizationDto,
   UpdateOrganizationDto,
+  InviteUserDto,
 } from './model/organization.dto';
-import { OrganizationService } from './organization.service';
+import { JwtAuthGuard } from '../shared/guards/auth.guard';
+import { RolesGuard } from '../shared/guards/role.guard';
+import { Roles } from '../shared/decorators/user.decorator';
+import { OrganizationRole } from './model/organization.enum';
 
 @Controller('organizations')
-@ApiTags('Organization')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
 
   @Post()
-  create(@Body() createDto: CreateOrganizationDto) {
-    return this.organizationService.createOrganization(createDto);
+  create(@Body() createOrganizationDto: CreateOrganizationDto, @Req() req) {
+    return this.organizationService.create(createOrganizationDto, req.user.id);
+  }
+
+  @Get()
+  @Roles(OrganizationRole.ADMIN)
+  findAll() {
+    return this.organizationService.findAll();
   }
 
   @Get(':id')
+  @Roles(OrganizationRole.ADMIN, OrganizationRole.STAFF)
   findOne(@Param('id') id: string) {
-    return this.organizationService.getOrganizationById(id);
+    return this.organizationService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDto: UpdateOrganizationDto) {
-    return this.organizationService.updateOrganization(id, updateDto);
+  @Roles(OrganizationRole.ADMIN)
+  update(
+    @Param('id') id: string,
+    @Body() updateOrganizationDto: UpdateOrganizationDto,
+  ) {
+    return this.organizationService.update(id, updateOrganizationDto);
   }
 
   @Delete(':id')
+  @Roles(OrganizationRole.ADMIN)
   remove(@Param('id') id: string) {
-    return this.organizationService.deleteOrganization(id);
+    return this.organizationService.remove(id);
+  }
+
+  @Post(':id/invite')
+  @Roles(OrganizationRole.ADMIN)
+  inviteUser(
+    @Param('id') id: string,
+    @Body() inviteUserDto: InviteUserDto,
+    @Req() req,
+  ) {
+    return this.organizationService.inviteUser(id, inviteUserDto, req.user);
   }
 }

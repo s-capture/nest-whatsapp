@@ -1,7 +1,7 @@
 import { OrganizationEntity } from 'src/organization/model/organization.entity';
+import { OrganizationRole } from 'src/organization/model/organization.enum';
 import { BaseEntity } from 'src/shared/base-entity/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { Role } from './user.enum';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
@@ -9,10 +9,13 @@ export class UserEntity extends BaseEntity {
   googleId: string;
 
   @Column({ nullable: true })
+  name: string;
+
+  @Column({ nullable: true })
   email: string;
 
   @Column({ nullable: true })
-  passwordHash: string;
+  password: string;
 
   @Column({ nullable: true })
   refreshToken: string;
@@ -26,8 +29,12 @@ export class UserEntity extends BaseEntity {
   @Column({ default: false })
   profielUrl: boolean;
 
-  @Column({ type: 'enum', enum: Role, default: Role.ADMIN })
-  role: Role;
+  @Column({
+    type: 'enum',
+    enum: OrganizationRole,
+    default: OrganizationRole.ADMIN,
+  })
+  role: OrganizationRole;
 
   // Keep ManyToOne for Organization
   @ManyToOne(() => OrganizationEntity, (organization) => organization.members, {

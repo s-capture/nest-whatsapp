@@ -1,38 +1,86 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
-  Param,
   Patch,
   Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from './model/user.dto';
+import { AuthService } from '../shared/auth/auth.service';
+import { UserDecorator } from '../shared/decorators/user.decorator';
+import { JwtAuthGuard } from '../shared/guards/auth.guard';
+import { RefreshGuard } from '../shared/guards/refresh.guard';
+import {
+  CreateUserDto,
+  InvitedUserDto,
+  LoginUserDto,
+  UpdateUserDto,
+} from './model/user.dto';
+import { UserEntity } from './model/user.entity';
 import { UserService } from './user.service';
-import { ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
-@ApiTags('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+  ) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.createUser(createUserDto);
+  @Post('register')
+  async register(@Body() createUserDto: CreateUserDto) {
+    const user = await this.userService.create(createUserDto);
+    return this.authService.login(user);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.getUserById(id);
+  @Post('register/invited')
+  async registerInvited(@Body() invitedUserDto: InvitedUserDto) {
+    const user = await this.userService.createInvitedUser(invitedUserDto);
+    return this.authService.login(user);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.updateUser(id, updateUserDto);
+  @Post('login')
+  async login(@Body() loginUserDto: LoginUserDto) {
+    const user = await this.authService.validateUser(
+      loginUserDto.email,
+      loginUserDto.password,
+    );
+    if (!user) {
+      throw new Error('Invalid credentials');
+    }
+    return this.authService.login(user);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.deleteUser(id);
+  @Get('profile')
+  @UseGuards(JwtAuthGuard)
+  getProfile(@UserDecorator() user: UserEntity) {
+    return this.userService.findById(user.id);
+  }
+
+  @Patch('profile')
+  @UseGuards(JwtAuthGuard)
+  updateProfile(
+    @UserDecorator() user: UserEntity,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.userService.update(user.id, updateUserDto);
+  }
+
+  @Post('refresh')
+  @UseGuards(RefreshGuard)
+  refreshToken(@UserDecorator() user: UserEntity) {
+    return this.authService.refreshToken(user);
+  }
+
+  @Get('google')
+  @UseGuards(JwtAuthGuard)
+  googleAuth() {
+    // Handled by GoogleStrategy
+  }
+
+  @Get('google/callback')
+  @UseGuards(JwtAuthGuard)
+  googleAuthRedirect(@Req() req) {
+    return this.authService.googleLogin(req);
   }
 }

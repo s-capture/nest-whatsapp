@@ -1,38 +1,35 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
-import { ConfigService } from '@nestjs/config';
-import * as fs from 'fs';
-import * as path from 'path';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class MailService {
-  private transporter: nodemailer.Transporter;
+  constructor(private mailerService: MailerService) {}
 
-  constructor(private configService: ConfigService) {
-    this.transporter = nodemailer.createTransport({
-      host: configService.get('MAIL_HOST'),
-      port: configService.get('MAIL_PORT'),
-      secure: configService.get('MAIL_SECURE'),
-      auth: {
-        user: configService.get('MAIL_USER'),
-        pass: configService.get('MAIL_PASSWORD'),
-      },
-    });
-  }
-
-  async sendInvitationEmail(email: string, inviteLink: string): Promise<void> {
-    const templatePath = path.join(
+  async sendInvitationEmail(
+    email: string,
+    inviterName: string,
+    organizationName: string,
+    role: string,
+    invitationLink: string,
+  ) {
+    const templatePath = join(
       __dirname,
-      '../../auth/templates/invitation-email.template.html',
+      '../../../templates/invitation-email.template.html',
     );
-    let html = fs.readFileSync(templatePath, 'utf8');
-    html = html.replace('{{inviteLink}}', inviteLink);
+    let htmlTemplate = readFileSync(templatePath, 'utf8');
 
-    await this.transporter.sendMail({
-      from: this.configService.get('MAIL_FROM'),
+    htmlTemplate = htmlTemplate
+      .replace('{{inviterName}}', inviterName)
+      .replace('{{organizationName}}', organizationName)
+      .replace('{{role}}', role)
+      .replace('{{invitationLink}}', invitationLink);
+
+    await this.mailerService.sendMail({
       to: email,
-      subject: 'You have been invited to join an organization',
-      html,
+      subject: `Invitation to join ${organizationName}`,
+      html: htmlTemplate,
     });
   }
 }

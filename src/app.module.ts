@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppConfigService } from './app-config.service';
 import { AppController } from './app.controller';
 // Add this at the very top of app.module.ts
 import * as crypto from 'crypto';
@@ -13,7 +12,7 @@ globalThis.crypto = crypto as any;
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -37,10 +36,9 @@ globalThis.crypto = crypto as any;
     SharedModule,
     OrganizationModule,
     UserModule,
-    // WhatsappModule,
   ],
 
   controllers: [AppController],
-  providers: [AppConfigService, AppService],
+  providers: [AppService],
 })
 export class AppModule {}
